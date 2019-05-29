@@ -9,6 +9,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/requesters")
@@ -34,7 +35,8 @@ public class RequesterController {
     }
 
     @GetMapping("/{id}")
-    public Requester getRequesterById(@PathVariable Long id) {
-        return repository.findById(id).orElse(new Requester());
+    public ResponseEntity<Requester> getRequesterById(@PathVariable Long id) {
+        Optional<Requester> optRequester = repository.findById(id);
+        return optRequester.isPresent() ? ResponseEntity.ok(optRequester.get()) : ResponseEntity.notFound().build();
     }
 }
