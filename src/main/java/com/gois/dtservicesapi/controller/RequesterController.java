@@ -32,4 +32,9 @@ public class RequesterController {
 
         return ResponseEntity.created(uri).body(requesterSaved);
     }
+
+    @GetMapping("/{id}")
+    public Requester getRequesterById(@PathVariable Long id) {
+        return repository.findById(id).orElse(new Requester());
+    }
 }
