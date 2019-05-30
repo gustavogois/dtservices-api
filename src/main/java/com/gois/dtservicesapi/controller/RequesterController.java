@@ -3,6 +3,7 @@ package com.gois.dtservicesapi.controller;
 import com.gois.dtservicesapi.model.Requester;
 import com.gois.dtservicesapi.respository.RequesterRespository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -40,4 +41,11 @@ public class RequesterController {
         Optional<Requester> optRequester = repository.findById(id);
         return optRequester.isPresent() ? ResponseEntity.ok(optRequester.get()) : ResponseEntity.notFound().build();
     }
+
+    @DeleteMapping("/{codigo}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void remover(@PathVariable Long codigo) {
+        repository.deleteById(codigo);
+    }
+
 }
