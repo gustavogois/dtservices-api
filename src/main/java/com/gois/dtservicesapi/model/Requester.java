@@ -1,6 +1,8 @@
 package com.gois.dtservicesapi.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 
 @Entity
@@ -11,10 +13,13 @@ public class Requester {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     private String name;
 
     private String dataBilling;
 
+    @NotNull
+    @Size(min = 3, max = 5)
     private String acronym;
 
     public Long getId() {

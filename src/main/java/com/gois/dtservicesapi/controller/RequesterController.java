@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +26,7 @@ public class RequesterController {
     }
 
     @PostMapping
-    public ResponseEntity<Requester> create(@RequestBody Requester requester) {
+    public ResponseEntity<Requester> create(@Valid @RequestBody Requester requester) {
         Requester requesterSaved = repository.save(requester);
 
         URI uri = ServletUriComponentsBuilder
