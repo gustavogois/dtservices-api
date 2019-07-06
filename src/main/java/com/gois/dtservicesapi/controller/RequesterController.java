@@ -1,7 +1,7 @@
 package com.gois.dtservicesapi.controller;
 
 import com.gois.dtservicesapi.model.Requester;
-import com.gois.dtservicesapi.respository.RequesterRespository;
+import com.gois.dtservicesapi.respository.RequesterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ import java.util.Optional;
 public class RequesterController {
 
     @Autowired
-    private RequesterRespository repository;
+    private RequesterRepository repository;
 
     @GetMapping
     public List<Requester> list() {
