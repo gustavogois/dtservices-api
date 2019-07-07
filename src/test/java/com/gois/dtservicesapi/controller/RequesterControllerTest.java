@@ -18,10 +18,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -97,10 +99,46 @@ public class RequesterControllerTest extends AbstractTest {
     }
 
     @Test
-    public void getRequesterById() {
+    public void getRequesterById_notfound() throws Exception {
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get(REQUESTERS_URI + "/23")
+                .accept(MediaType.APPLICATION_JSON);
+
+        when(repositoryMock.findById(any())).thenReturn(Optional.empty());
+
+        MvcResult mvcResult = mockMvc
+                .perform(request)
+                .andExpect(status().isNotFound())
+                .andReturn();
+
     }
 
     @Test
-    public void remover() {
+    public void getRequesterById() throws Exception {
+        Requester banco_abc = new RequesterBuilder().withName("Banco ABC").withAcronym("ABC").build();
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get(REQUESTERS_URI + "/23")
+                .accept(MediaType.APPLICATION_JSON);
+
+        when(repositoryMock.findById(any())).thenReturn(Optional.of(banco_abc));
+
+        MvcResult mvcResult = mockMvc
+                .perform(request)
+                .andExpect(status().isOk())
+                .andReturn();
+
+        Requester requester = super.mapFromJson(mvcResult.getResponse().getContentAsString(), Requester.class);
+        assertThat(requester).isNotNull();
+        assertThat(requester.getAcronym()).isEqualTo("ABC");
+    }
+
+    @Test
+    public void remover() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                .delete(REQUESTERS_URI + "/23"))
+                .andExpect(status().isNoContent())
+                .andReturn();
     }
 }
