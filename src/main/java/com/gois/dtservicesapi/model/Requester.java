@@ -59,7 +59,7 @@ public class Requester {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Requester requester = (Requester) o;
-        return id.equals(requester.id);
+        return Objects.equals(id, requester.id);
     }
 
     @Override

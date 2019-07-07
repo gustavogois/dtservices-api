@@ -6,8 +6,18 @@ public class RequesterBuilder {
 
     private Requester requester = new Requester();
 
+    public RequesterBuilder withId(Long id) {
+        this.requester.setId(id);
+        return this;
+    }
+
     public RequesterBuilder withName(String name) {
         this.requester.setName(name);
+        return this;
+    }
+
+    public RequesterBuilder withAcronym(String acronym) {
+        this.requester.setAcronym(acronym);
         return this;
     }
 
