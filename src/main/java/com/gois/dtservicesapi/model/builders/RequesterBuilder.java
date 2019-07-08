@@ -16,6 +16,11 @@ public class RequesterBuilder {
         return this;
     }
 
+    public RequesterBuilder withDataBilling(String dataBilling) {
+        this.requester.setDataBilling(dataBilling);
+        return this;
+    }
+
     public RequesterBuilder withAcronym(String acronym) {
         this.requester.setAcronym(acronym);
         return this;

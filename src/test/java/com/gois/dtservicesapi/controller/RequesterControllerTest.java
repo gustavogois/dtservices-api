@@ -25,7 +25,8 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(RequesterController.class)
@@ -140,5 +141,26 @@ public class RequesterControllerTest extends AbstractTest {
                 .delete(REQUESTERS_URI + "/23"))
                 .andExpect(status().isNoContent())
                 .andReturn();
+    }
+
+    @Test
+    public void update() throws Exception {
+        Requester banco_abc_with_no_data_billing = new RequesterBuilder()
+                                                            .withName("Banco ABC").withAcronym("ABC").build();
+        when(repositoryMock.findById(any())).thenReturn(Optional.of(banco_abc_with_no_data_billing));
+        Requester banco_abc_with_data_billing = new RequesterBuilder()
+                .withName("Banco ABC").withAcronym("ABC").withDataBilling("Dados para faturamento").build();
+
+        String inputJson = super.mapToJson(banco_abc_with_data_billing);
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                .put(REQUESTERS_URI + "/1")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(inputJson))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        Requester requester = super.mapFromJson(mvcResult.getResponse().getContentAsString(), Requester.class);
+        assertThat(requester).isNotNull();
+        assertThat(requester.getDataBilling()).isEqualTo("Dados para faturamento");
     }
 }
