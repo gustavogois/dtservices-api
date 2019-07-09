@@ -181,4 +181,20 @@ public class RequesterControllerTest extends AbstractTest {
                 .andReturn();
 
     }
+
+    @Test
+    public void update_not_found() throws Exception {
+        when(repositoryMock.findById(any())).thenReturn(Optional.empty());
+        Requester banco_abc_with_data_billing = new RequesterBuilder()
+                .withName("Banco ABC").withAcronym("ABC").withDataBilling("Dados para faturamento").build();
+
+        String inputJson = super.mapToJson(banco_abc_with_data_billing);
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                .put(REQUESTERS_URI + "/50")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(inputJson))
+                .andExpect(status().isNotFound())
+                .andReturn();
+
+    }
 }
