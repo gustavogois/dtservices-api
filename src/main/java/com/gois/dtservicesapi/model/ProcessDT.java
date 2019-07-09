@@ -8,7 +8,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "process")
-public class Process {
+public class ProcessDT {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -72,8 +72,8 @@ public class Process {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Process process = (Process) o;
-        return Objects.equals(id, process.id);
+        ProcessDT processDT = (ProcessDT) o;
+        return Objects.equals(id, processDT.id);
     }
 
     @Override
