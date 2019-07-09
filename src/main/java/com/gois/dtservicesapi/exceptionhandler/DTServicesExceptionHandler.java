@@ -33,7 +33,7 @@ public class DTServicesExceptionHandler extends ResponseEntityExceptionHandler {
 
         String userMessage = messageSource.getMessage("msg.invalid", null,
                 LocaleContextHolder.getLocale());
-        String developerMessage = ex.getCause().toString();
+        String developerMessage = ex.getCause() != null ? ex.getCause().toString() : ex.toString();
         List<Error> erros = Arrays.asList(new Error(userMessage, developerMessage));
         return handleExceptionInternal(ex, erros, headers, HttpStatus.BAD_REQUEST, request);
     }
