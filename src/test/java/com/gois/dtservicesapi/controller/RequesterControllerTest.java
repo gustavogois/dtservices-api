@@ -163,4 +163,22 @@ public class RequesterControllerTest extends AbstractTest {
         assertThat(requester).isNotNull();
         assertThat(requester.getDataBilling()).isEqualTo("Dados para faturamento");
     }
+
+    @Test
+    public void update_name_null() throws Exception {
+        Requester banco_abc_with_no_data_billing = new RequesterBuilder()
+                .withName("Banco ABC").withAcronym("ABC").build();
+        when(repositoryMock.findById(any())).thenReturn(Optional.of(banco_abc_with_no_data_billing));
+        Requester banco_abc_with_no_name_data_billing = new RequesterBuilder()
+                .withAcronym("ABC").withDataBilling("Dados para faturamento").build();
+
+        String inputJson = super.mapToJson(banco_abc_with_no_name_data_billing);
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                .put(REQUESTERS_URI + "/1")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(inputJson))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+    }
 }
