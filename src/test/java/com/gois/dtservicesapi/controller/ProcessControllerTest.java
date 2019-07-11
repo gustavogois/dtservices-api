@@ -5,6 +5,8 @@ import com.gois.dtservicesapi.model.Requester;
 import com.gois.dtservicesapi.model.builders.ProcessDTBuilder;
 import com.gois.dtservicesapi.model.builders.RequesterBuilder;
 import com.gois.dtservicesapi.respository.ProcessRepository;
+import com.gois.dtservicesapi.util.AbstractTest;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(ProcessController.class)
-public class ProcessControllerTest {
+public class ProcessControllerTest extends AbstractTest {
 
     public static final String PROCESS_URI = "/process";
 
@@ -39,17 +41,24 @@ public class ProcessControllerTest {
     @MockBean
     ProcessRepository repository;
 
-    @Test
-    public void list() throws Exception {
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .get(PROCESS_URI)
-                .accept(MediaType.APPLICATION_JSON);
+    private static List<Requester> requesters;
+    private static final int BANCO_ABC = 0;
+    private static final int BANCO_XYZ = 1;
 
+    private static List<ProcessDT> process;
+    private static final int WITH_BANCO_ABC_1 = 0;
+    private static final int WITH_BANCO_ABC_2 = 1;
+    private static final int WITH_BANCO_XYZ_1 = 2;
+    private static final int WITH_BANCO_XYZ_2 = 3;
+
+
+
+    @BeforeClass
+    public static void setUp() throws Exception {
         Requester banco_abc = new RequesterBuilder().withId(1L).withName("Banco ABC").build();
         Requester banco_xyz = new RequesterBuilder().withId(2L).withName("Banco XYZ").build();
-        List<Requester> requesters = Arrays.asList(banco_abc,banco_xyz);
-
-        List<ProcessDT> process = Arrays.asList(
+        requesters = Arrays.asList(banco_abc,banco_xyz);
+        process = Arrays.asList(
                 new ProcessDTBuilder()
                         .withExtCode("adasd123123").withDtCreation(LocalDateTime.now().minusDays(1))
                         .withRequester(banco_abc).build(),
@@ -63,6 +72,13 @@ public class ProcessControllerTest {
                         .withExtCode("qwqwqw23232").withDtCreation(LocalDateTime.now().minusDays(4))
                         .withRequester(banco_xyz).build()
         );
+    }
+
+    @Test
+    public void list() throws Exception {
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get(PROCESS_URI)
+                .accept(MediaType.APPLICATION_JSON);
 
         when(repository.findAll()).thenReturn(process);
 
@@ -70,8 +86,22 @@ public class ProcessControllerTest {
                 .perform(request)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(4)))
-                .andExpect(jsonPath("$[0].externalCode", is(process.get(0).getExternalCode())))
+                .andExpect(jsonPath("$[0].externalCode", is(process.get(WITH_BANCO_ABC_1)
+                                                                                .getExternalCode())))
                 .andReturn();
 
+    }
+
+    @Test
+    public void create_400_external_code() throws Exception {
+        ProcessDT process_without_ext_code = new ProcessDTBuilder().withRequester(requesters.get(BANCO_ABC)).build();
+
+        String inputJson = super.mapToJson(process_without_ext_code);
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                    .post(PROCESS_URI)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .content(inputJson))
+                .andExpect(status().isBadRequest())
+                .andReturn();
     }
 }

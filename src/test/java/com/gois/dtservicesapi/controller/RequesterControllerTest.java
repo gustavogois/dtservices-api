@@ -66,8 +66,6 @@ public class RequesterControllerTest extends AbstractTest {
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].name", is(requesters.get(0).getName())))
                 .andReturn();
-
-
     }
 
     @Test
@@ -93,9 +91,9 @@ public class RequesterControllerTest extends AbstractTest {
 
         String inputJson = super.mapToJson(banco_abc);
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-                .post(REQUESTERS_URI)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(inputJson))
+                    .post(REQUESTERS_URI)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .content(inputJson))
                 .andExpect(status().isCreated())
                 .andReturn();
 
