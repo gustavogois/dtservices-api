@@ -5,6 +5,7 @@ import com.gois.dtservicesapi.model.builders.RequesterBuilder;
 import com.gois.dtservicesapi.respository.RequesterRepository;
 import com.gois.dtservicesapi.service.RequesterService;
 import com.gois.dtservicesapi.util.AbstractTest;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,34 +46,47 @@ public class RequesterControllerTest extends AbstractTest {
     @MockBean
     RequesterService service;
 
-    @Test
+    private static List<Requester> requesters;
+    private static final int BANCO_ABC_WITH_NO_DATA_BILLING = 0;
+    private static final int BANCO_XYZ = 1;
+    private static final int WITHOUT_ACRONYM = 2;
+    private static final int BANCO_ABC_WITH_DATA_BILLING = 3;
+    private static final int WITH_NAME_NULL = 4;
+
+    @BeforeClass
+    public static void setUp() throws Exception {
+        Requester banco_abc = new RequesterBuilder().withId(1L).withName("Banco ABC").withAcronym("ABC").build();
+        Requester banco_xyz = new RequesterBuilder().withId(2L).withName("Banco XYZ").withAcronym("XYZ").build();
+        Requester without_acronym = new RequesterBuilder().withName("Banco ABC").build();
+        Requester banco_abc_with_data_billing = new RequesterBuilder()
+                .withName("Banco ABC").withAcronym("ABC").withDataBilling("Dados para faturamento").build();
+        Requester with_name_null = new RequesterBuilder()
+                .withAcronym("ABC").withDataBilling("Dados para faturamento").build();
+        requesters = Arrays.asList(banco_abc, banco_xyz, without_acronym, banco_abc_with_data_billing, with_name_null);
+    }
+
+        @Test
     public void list() throws Exception {
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                 .get(REQUESTERS_URI)
                 .accept(MediaType.APPLICATION_JSON);
 
-        List<Requester> requesters = Arrays.asList(
-                new RequesterBuilder().withName("Banco ABC").build(),
-                new RequesterBuilder().withName("Banco XYZ").build()
-        );
-
         when(repository.findAll())
-                .thenReturn(requesters);
+                .thenReturn(this.requesters);
 
         MvcResult mvcResult = mockMvc
                 .perform(request)
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].name", is(requesters.get(0).getName())))
+                .andExpect(jsonPath("$", hasSize(requesters.size())))
+                .andExpect(jsonPath("$[0].name", is(this.requesters.get(BANCO_ABC_WITH_NO_DATA_BILLING).getName())))
                 .andReturn();
     }
 
     @Test
     public void create_400_acronym_required() throws Exception {
-        Requester banco_abc = new RequesterBuilder().withName("Banco ABC").build();
 
-        String inputJson = super.mapToJson(banco_abc);
+        String inputJson = super.mapToJson(this.requesters.get(WITHOUT_ACRONYM));
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
                                                 .post(REQUESTERS_URI)
                                                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -85,11 +99,9 @@ public class RequesterControllerTest extends AbstractTest {
     @Test
     public void create() throws Exception {
 
-        Requester banco_abc = new RequesterBuilder().withName("Banco ABC").withAcronym("ABC").build();
+        when(repository.save(requesters.get(BANCO_ABC_WITH_NO_DATA_BILLING))).thenReturn(requesters.get(BANCO_ABC_WITH_NO_DATA_BILLING));
 
-        when(repository.save(banco_abc)).thenReturn(banco_abc);
-
-        String inputJson = super.mapToJson(banco_abc);
+        String inputJson = super.mapToJson(requesters.get(BANCO_ABC_WITH_NO_DATA_BILLING));
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
                     .post(REQUESTERS_URI)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -120,13 +132,12 @@ public class RequesterControllerTest extends AbstractTest {
 
     @Test
     public void getRequesterById() throws Exception {
-        Requester banco_abc = new RequesterBuilder().withName("Banco ABC").withAcronym("ABC").build();
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                 .get(REQUESTERS_URI + "/23")
                 .accept(MediaType.APPLICATION_JSON);
 
-        when(repository.findById(any())).thenReturn(Optional.of(banco_abc));
+        when(repository.findById(any())).thenReturn(Optional.of(requesters.get(BANCO_ABC_WITH_NO_DATA_BILLING)));
 
         MvcResult mvcResult = mockMvc
                 .perform(request)
@@ -148,13 +159,10 @@ public class RequesterControllerTest extends AbstractTest {
 
     @Test
     public void update() throws Exception {
-        Requester abc_with_no_data_billing = new RequesterBuilder()
-                                                            .withName("Banco ABC").withAcronym("ABC").build();
-        Requester abc_with_data_billing = new RequesterBuilder()
-                .withName("Banco ABC").withAcronym("ABC").withDataBilling("Dados para faturamento").build();
-        when(service.update(1L, abc_with_no_data_billing)).thenReturn(abc_with_data_billing);
+        when(service.update(1L, requesters.get(BANCO_ABC_WITH_NO_DATA_BILLING)))
+                .thenReturn(requesters.get(BANCO_ABC_WITH_DATA_BILLING));
 
-        String inputJson = super.mapToJson(abc_with_no_data_billing);
+        String inputJson = super.mapToJson(requesters.get(BANCO_ABC_WITH_NO_DATA_BILLING));
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
                 .put(REQUESTERS_URI + "/1")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -169,10 +177,9 @@ public class RequesterControllerTest extends AbstractTest {
 
     @Test
     public void update_name_null() throws Exception {
-        Requester banco_abc_with_no_name_data_billing = new RequesterBuilder()
-                .withAcronym("ABC").withDataBilling("Dados para faturamento").build();
 
-        String inputJson = super.mapToJson(banco_abc_with_no_name_data_billing);
+
+        String inputJson = super.mapToJson(requesters.get(WITH_NAME_NULL));
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
                 .put(REQUESTERS_URI + "/1")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -186,9 +193,7 @@ public class RequesterControllerTest extends AbstractTest {
     public void update_not_found() throws Exception {
         when(service.update(any(), any())).thenThrow(new EmptyResultDataAccessException(1));
 
-        Requester banco_abc = new RequesterBuilder().withName("Banco ABC").withAcronym("ABC").build();
-
-        String inputJson = super.mapToJson(banco_abc);
+        String inputJson = super.mapToJson(requesters.get(BANCO_ABC_WITH_DATA_BILLING));
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
                 .put(REQUESTERS_URI + "/50")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

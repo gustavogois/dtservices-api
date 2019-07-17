@@ -52,8 +52,6 @@ public class ProcessControllerTest extends AbstractTest {
     private static final int PROCESS_WITH_EXT_CODE_MIN_SIZE_ERROR = 2;
     private static final int PROCESS_WITH_EXT_CODE_MAX_SIZE_ERROR = 3;
 
-    // TODO: Alterar os testes para reaproveitar os dados criados
-
     @BeforeClass
     public static void setUp() throws Exception {
         Requester banco_abc = new RequesterBuilder().withId(1L).withName("Banco ABC").withAcronym("ABC").build();
