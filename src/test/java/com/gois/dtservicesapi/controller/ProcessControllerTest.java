@@ -48,16 +48,16 @@ public class ProcessControllerTest extends AbstractTest {
 
     private static List<ProcessDT> process;
     private static final int WITH_BANCO_ABC_1 = 0;
-    private static final int WITH_BANCO_ABC_2 = 1;
+    private static final int WITHOUT_EXTERNAL_CODE = 1;
     private static final int WITH_BANCO_XYZ_1 = 2;
     private static final int WITH_BANCO_XYZ_2 = 3;
 
-
+    // TODO: Alterar os testes para reaproveitar os dados criados
 
     @BeforeClass
     public static void setUp() throws Exception {
-        Requester banco_abc = new RequesterBuilder().withId(1L).withName("Banco ABC").build();
-        Requester banco_xyz = new RequesterBuilder().withId(2L).withName("Banco XYZ").build();
+        Requester banco_abc = new RequesterBuilder().withId(1L).withName("Banco ABC").withAcronym("ABC").build();
+        Requester banco_xyz = new RequesterBuilder().withId(2L).withName("Banco XYZ").withAcronym("XYZ").build();
         requesters = Arrays.asList(banco_abc,banco_xyz);
         process = Arrays.asList(
                 new ProcessDTBuilder()
@@ -65,7 +65,7 @@ public class ProcessControllerTest extends AbstractTest {
                         .withDtCreation(LocalDateTime.now().minusDays(1))
                         .withRequester(banco_abc).build(),
                 new ProcessDTBuilder()
-                        .withExtCode("jhkh234234").withDtCreation(LocalDateTime.now().minusDays(2))
+                        .withDtCreation(LocalDateTime.now().minusDays(2))
                         .withRequester(banco_abc).build(),
                 new ProcessDTBuilder()
                         .withExtCode("popoi098098").withDtCreation(LocalDateTime.now().minusDays(3))
@@ -96,9 +96,8 @@ public class ProcessControllerTest extends AbstractTest {
 
     @Test
     public void create_400_external_code() throws Exception {
-        ProcessDT process_without_ext_code = new ProcessDTBuilder().withRequester(requesters.get(BANCO_ABC)).build();
 
-        String inputJson = super.mapToJson(process_without_ext_code);
+        String inputJson = super.mapToJson(process.get(WITHOUT_EXTERNAL_CODE));
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
                     .post(PROCESS_URI)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -141,7 +140,9 @@ public class ProcessControllerTest extends AbstractTest {
 
     @Test
     public void create() throws Exception {
-        String inputJson = super.mapToJson(process.get(WITH_BANCO_ABC_1));
+        ProcessDT processToBeSaved = process.get(WITH_BANCO_ABC_1);
+        String inputJson = super.mapToJson(processToBeSaved);
+        when(repository.save(processToBeSaved)).thenReturn(processToBeSaved);
 
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
                 .post(PROCESS_URI)
