@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.when;
@@ -60,7 +61,8 @@ public class ProcessControllerTest extends AbstractTest {
         requesters = Arrays.asList(banco_abc,banco_xyz);
         process = Arrays.asList(
                 new ProcessDTBuilder()
-                        .withExtCode("adasd123123").withDtCreation(LocalDateTime.now().minusDays(1))
+                        .withExtCode("adasd123123")
+                        .withDtCreation(LocalDateTime.now().minusDays(1))
                         .withRequester(banco_abc).build(),
                 new ProcessDTBuilder()
                         .withExtCode("jhkh234234").withDtCreation(LocalDateTime.now().minusDays(2))
@@ -104,4 +106,53 @@ public class ProcessControllerTest extends AbstractTest {
                 .andExpect(status().isBadRequest())
                 .andReturn();
     }
+
+    @Test
+    public void create_400_external_code_min_size_error() throws Exception {
+        ProcessDT process_with_ext_code_size_error =
+                new ProcessDTBuilder().withRequester(requesters.get(BANCO_ABC))
+                        .withExtCode("")
+                        .build();
+
+        String inputJson = super.mapToJson(process_with_ext_code_size_error);
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                .post(PROCESS_URI)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(inputJson))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+    }
+
+    @Test
+    public void create_400_external_code_max_size_error() throws Exception {
+        ProcessDT process_with_ext_code_size_error =
+                new ProcessDTBuilder().withRequester(requesters.get(BANCO_ABC))
+                        .withExtCode("123456789123456789123456789")
+                        .build();
+
+        String inputJson = super.mapToJson(process_with_ext_code_size_error);
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                .post(PROCESS_URI)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(inputJson))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+    }
+
+    @Test
+    public void create() throws Exception {
+        String inputJson = super.mapToJson(process.get(WITH_BANCO_ABC_1));
+
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                .post(PROCESS_URI)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(inputJson))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        ProcessDT process = super.mapFromJson(mvcResult.getResponse().getContentAsString(), ProcessDT.class);
+        assertThat(process).isNotNull();
+        assertThat(process.getRequester().getAcronym()).isEqualTo("ABC");
+    }
+
 }

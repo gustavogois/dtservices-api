@@ -50,6 +50,12 @@
             <artifactId>flyway-core</artifactId>
         </dependency>
 
+        <!-- Integration Test -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
