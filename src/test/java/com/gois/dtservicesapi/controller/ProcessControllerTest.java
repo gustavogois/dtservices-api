@@ -49,8 +49,8 @@ public class ProcessControllerTest extends AbstractTest {
     private static List<ProcessDT> process;
     private static final int WITH_BANCO_ABC_1 = 0;
     private static final int WITHOUT_EXTERNAL_CODE = 1;
-    private static final int WITH_BANCO_XYZ_1 = 2;
-    private static final int WITH_BANCO_XYZ_2 = 3;
+    private static final int PROCESS_WITH_EXT_CODE_MIN_SIZE_ERROR = 2;
+    private static final int PROCESS_WITH_EXT_CODE_MAX_SIZE_ERROR = 3;
 
     // TODO: Alterar os testes para reaproveitar os dados criados
 
@@ -67,12 +67,12 @@ public class ProcessControllerTest extends AbstractTest {
                 new ProcessDTBuilder()
                         .withDtCreation(LocalDateTime.now().minusDays(2))
                         .withRequester(banco_abc).build(),
-                new ProcessDTBuilder()
-                        .withExtCode("popoi098098").withDtCreation(LocalDateTime.now().minusDays(3))
-                        .withRequester(banco_xyz).build(),
-                new ProcessDTBuilder()
-                        .withExtCode("qwqwqw23232").withDtCreation(LocalDateTime.now().minusDays(4))
-                        .withRequester(banco_xyz).build()
+                new ProcessDTBuilder().withRequester(requesters.get(BANCO_ABC))
+                        .withExtCode("")
+                        .build(),
+                new ProcessDTBuilder().withRequester(requesters.get(BANCO_ABC))
+                        .withExtCode("123456789123456789123456789")
+                        .build()
         );
     }
 
@@ -108,12 +108,8 @@ public class ProcessControllerTest extends AbstractTest {
 
     @Test
     public void create_400_external_code_min_size_error() throws Exception {
-        ProcessDT process_with_ext_code_size_error =
-                new ProcessDTBuilder().withRequester(requesters.get(BANCO_ABC))
-                        .withExtCode("")
-                        .build();
 
-        String inputJson = super.mapToJson(process_with_ext_code_size_error);
+        String inputJson = super.mapToJson(process.get(PROCESS_WITH_EXT_CODE_MIN_SIZE_ERROR));
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
                 .post(PROCESS_URI)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -124,12 +120,9 @@ public class ProcessControllerTest extends AbstractTest {
 
     @Test
     public void create_400_external_code_max_size_error() throws Exception {
-        ProcessDT process_with_ext_code_size_error =
-                new ProcessDTBuilder().withRequester(requesters.get(BANCO_ABC))
-                        .withExtCode("123456789123456789123456789")
-                        .build();
 
-        String inputJson = super.mapToJson(process_with_ext_code_size_error);
+        String inputJson = super.mapToJson(process.get(PROCESS_WITH_EXT_CODE_MAX_SIZE_ERROR));
+
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
                 .post(PROCESS_URI)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
