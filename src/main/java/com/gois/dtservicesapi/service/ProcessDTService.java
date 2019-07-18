@@ -20,4 +20,8 @@ public class ProcessDTService {
     public ProcessDT save(ProcessDT process) {
         return repository.save(process);
     }
+
+    private void calculateInternalCode() {
+
+    }
 }
