@@ -2,7 +2,7 @@ package com.gois.dtservicesapi.service;
 
 import com.gois.dtservicesapi.model.Requester;
 import com.gois.dtservicesapi.model.builders.RequesterBuilder;
-import com.gois.dtservicesapi.respository.RequesterRepository;
+import com.gois.dtservicesapi.repository.RequesterRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;

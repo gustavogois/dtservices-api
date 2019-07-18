@@ -2,7 +2,7 @@ package com.gois.dtservicesapi.controller;
 
 import com.gois.dtservicesapi.model.Requester;
 import com.gois.dtservicesapi.model.builders.RequesterBuilder;
-import com.gois.dtservicesapi.respository.RequesterRepository;
+import com.gois.dtservicesapi.repository.RequesterRepository;
 import com.gois.dtservicesapi.service.RequesterService;
 import com.gois.dtservicesapi.util.AbstractTest;
 import org.junit.BeforeClass;

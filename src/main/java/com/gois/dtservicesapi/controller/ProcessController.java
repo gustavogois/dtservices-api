@@ -1,7 +1,7 @@
 package com.gois.dtservicesapi.controller;
 
 import com.gois.dtservicesapi.model.ProcessDT;
-import com.gois.dtservicesapi.respository.ProcessRepository;
+import com.gois.dtservicesapi.repository.ProcessRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,7 +1,7 @@
 package com.gois.dtservicesapi.controller;
 
 import com.gois.dtservicesapi.model.Requester;
-import com.gois.dtservicesapi.respository.RequesterRepository;
+import com.gois.dtservicesapi.repository.RequesterRepository;
 import com.gois.dtservicesapi.service.RequesterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

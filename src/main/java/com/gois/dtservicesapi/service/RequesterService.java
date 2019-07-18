@@ -1,7 +1,7 @@
 package com.gois.dtservicesapi.service;
 
 import com.gois.dtservicesapi.model.Requester;
-import com.gois.dtservicesapi.respository.RequesterRepository;
+import com.gois.dtservicesapi.repository.RequesterRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;

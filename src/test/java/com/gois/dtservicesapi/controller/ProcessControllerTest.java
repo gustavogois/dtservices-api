@@ -4,7 +4,7 @@ import com.gois.dtservicesapi.model.ProcessDT;
 import com.gois.dtservicesapi.model.Requester;
 import com.gois.dtservicesapi.model.builders.ProcessDTBuilder;
 import com.gois.dtservicesapi.model.builders.RequesterBuilder;
-import com.gois.dtservicesapi.respository.ProcessRepository;
+import com.gois.dtservicesapi.repository.ProcessRepository;
 import com.gois.dtservicesapi.util.AbstractTest;
 import org.junit.BeforeClass;
 import org.junit.Test;
