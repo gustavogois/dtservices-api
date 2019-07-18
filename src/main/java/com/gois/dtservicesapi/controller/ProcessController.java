@@ -1,7 +1,7 @@
 package com.gois.dtservicesapi.controller;
 
 import com.gois.dtservicesapi.model.ProcessDT;
-import com.gois.dtservicesapi.repository.ProcessRepository;
+import com.gois.dtservicesapi.service.ProcessDTService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,20 +16,17 @@ import java.util.List;
 public class ProcessController {
 
     @Autowired
-    private ProcessRepository repository;
-
-    //@Autowired
-    //private RequesterService service;
+    private ProcessDTService service;
 
     @GetMapping
     public List<ProcessDT> list() {
 
-        return repository.findAll();
+        return service.findAll();
     }
 
     @PostMapping
     public ResponseEntity<ProcessDT> create(@Valid @RequestBody ProcessDT process) {
-        ProcessDT processSaved = repository.save(process);
+        ProcessDT processSaved = service.save(process);
 
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequestUri().path("/{id}").buildAndExpand(process.getId()).toUri();

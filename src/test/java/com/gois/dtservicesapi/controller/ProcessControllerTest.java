@@ -4,7 +4,7 @@ import com.gois.dtservicesapi.model.ProcessDT;
 import com.gois.dtservicesapi.model.Requester;
 import com.gois.dtservicesapi.model.builders.ProcessDTBuilder;
 import com.gois.dtservicesapi.model.builders.RequesterBuilder;
-import com.gois.dtservicesapi.repository.ProcessRepository;
+import com.gois.dtservicesapi.service.ProcessDTService;
 import com.gois.dtservicesapi.util.AbstractTest;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -40,7 +40,7 @@ public class ProcessControllerTest extends AbstractTest {
     private MockMvc mockMvc;
 
     @MockBean
-    ProcessRepository repository;
+    ProcessDTService service;
 
     private static List<Requester> requesters;
     private static final int BANCO_ABC = 0;
@@ -80,7 +80,7 @@ public class ProcessControllerTest extends AbstractTest {
                 .get(PROCESS_URI)
                 .accept(MediaType.APPLICATION_JSON);
 
-        when(repository.findAll()).thenReturn(process);
+        when(service.findAll()).thenReturn(process);
 
         MvcResult mvcResult = mockMvc
                 .perform(request)
@@ -133,7 +133,7 @@ public class ProcessControllerTest extends AbstractTest {
     public void create() throws Exception {
         ProcessDT processToBeSaved = process.get(WITH_BANCO_ABC_1);
         String inputJson = super.mapToJson(processToBeSaved);
-        when(repository.save(processToBeSaved)).thenReturn(processToBeSaved);
+        when(service.save(processToBeSaved)).thenReturn(processToBeSaved);
 
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
                 .post(PROCESS_URI)
