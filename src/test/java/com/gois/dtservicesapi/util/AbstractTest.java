@@ -18,4 +18,7 @@ public class AbstractTest {
 
         return objectMapper.readValue(json, clazz);
     }
+    protected String createURLWithPort(String uri, int port) {
+        return "http://localhost:" + port + uri;
+    }
 }
