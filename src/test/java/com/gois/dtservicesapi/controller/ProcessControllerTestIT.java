@@ -16,17 +16,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
-// TODO: Transformar AbstractTest em TestUtil
-
-// TODO: Logs
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles(profiles = "dev")
 public class ProcessControllerTestIT extends AbstractTest {
-
-    // TODO: Refactoring test classes, abstractIT
 
     @LocalServerPort
     private int port;
@@ -46,13 +39,57 @@ public class ProcessControllerTestIT extends AbstractTest {
         ProcessDT processDT = repository.findById(1L).get();
         processDT.setId(null);
 
+        long count = repository.count();
 
         HttpEntity<String> entity = new HttpEntity<String>(super.mapToJson(processDT), headers);
         ResponseEntity<String> response = restTemplate.exchange(
                 createURLWithPort("/process", port), HttpMethod.POST, entity, String.class);
         ProcessDT processCreated = super.mapFromJson(response.getBody().toString(), ProcessDT.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(repository.count()).isEqualTo(count + 1);
         assertThat(processCreated.getId()).isNotNull();
         assertThat(processCreated.getExternalCode()).isEqualTo(processDT.getExternalCode());
         assertThat(processCreated.getRequester()).isEqualTo(processDT.getRequester());
+    }
+
+    @Test
+    public void findById() throws Exception {
+
+        String id = "1";
+
+        ResponseEntity<String> response = restTemplate.getForEntity(
+                createURLWithPort("/process/" + id, port), String.class);
+        ProcessDT process = super.mapFromJson(response.getBody().toString(), ProcessDT.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(process.getId()).isEqualTo(Long.parseLong(id));
+    }
+
+    @Test
+    public void update() throws Exception {
+
+        String id = "1";
+
+        ResponseEntity<String> response = restTemplate.getForEntity(
+                createURLWithPort("/process/" + id, port), String.class);
+        ProcessDT process = super.mapFromJson(response.getBody().toString(), ProcessDT.class);
+        process.setExternalCode("new");
+        HttpEntity<String> entity = new HttpEntity<String>(super.mapToJson(process), headers);
+        ResponseEntity<String> responseUpdate = restTemplate.exchange(
+                createURLWithPort("/process/" + id, port), HttpMethod.PUT, entity, String.class);
+        ProcessDT processUpdated = super.mapFromJson(responseUpdate.getBody().toString(), ProcessDT.class);
+        assertThat(processUpdated.getExternalCode()).isEqualTo("new");
+        assertThat(processUpdated.getId()).isEqualTo(process.getId());
+        assertThat(processUpdated.getInternalCode()).isEqualTo(process.getInternalCode());
+    }
+
+    @Test
+    public void deleteById() throws Exception {
+
+        String id = "2";
+
+        long count = repository.count();
+
+        restTemplate.delete(createURLWithPort("/process/" + id, port));
+        assertThat(repository.count()).isEqualTo(count - 1);
     }
 }
