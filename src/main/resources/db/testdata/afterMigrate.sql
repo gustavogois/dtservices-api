@@ -1,3 +1,25 @@
+CREATE TABLE requester (
+                         id              BIGINT(20)  PRIMARY KEY AUTO_INCREMENT,
+                         name            VARCHAR(50) NOT NULL,
+                         acronym         VARCHAR(3)  NOT NULL,
+                         data_billing    VARCHAR(200)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE process (
+                       id				BIGINT(20)		PRIMARY KEY AUTO_INCREMENT,
+                       external_code	VARCHAR(20)		NOT NULL,
+                       internal_code	VARCHAR(7)		NOT NULL,
+                       dt_creation		DATETIME		NOT NULL,
+                       requester_id	  BIGINT(20)		NOT NULL,
+                       FOREIGN KEY (requester_id) REFERENCES requester(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE service_type (
+                            id				      BIGINT(20)      PRIMARY KEY AUTO_INCREMENT,
+                            name	          VARCHAR(30)		  NOT NULL,
+                            default_value	DECIMAL(8,2)		NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 INSERT INTO requester (name, acronym, data_billing) values ('Banco Whitestar', 'WHT', '');
 INSERT INTO requester (name, acronym, data_billing) values ('Banco Millenium', 'BCP', '');
 
