@@ -4,6 +4,3 @@ CREATE TABLE requester (
     acronym         VARCHAR(3)  NOT NULL,
     data_billing    VARCHAR(200)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-INSERT INTO requester (name, acronym, data_billing) values ('Banco Whitestar', 'WHT', '');
-INSERT INTO requester (name, acronym, data_billing) values ('Banco Millenium', 'BCP', '');
