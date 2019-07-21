@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 
-public class AbstractTest {
+public abstract class AbstractTest {
 
     @Autowired
     private ObjectMapper objectMapper;
