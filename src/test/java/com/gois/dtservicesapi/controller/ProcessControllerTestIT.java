@@ -4,6 +4,7 @@ package com.gois.dtservicesapi.controller;
 import com.gois.dtservicesapi.model.ProcessDT;
 import com.gois.dtservicesapi.repository.ProcessRepository;
 import com.gois.dtservicesapi.util.AbstractTest;
+import com.gois.dtservicesapi.util.data.ProcessData;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,15 @@ public class ProcessControllerTestIT extends AbstractTest {
         assertThat(processCreated.getId()).isNotNull();
         assertThat(processCreated.getExternalCode()).isEqualTo(processDT.getExternalCode());
         assertThat(processCreated.getRequester()).isEqualTo(processDT.getRequester());
+    }
+
+    @Test
+    public void create_with_requester_not_found() throws Exception {
+
+        HttpEntity<String> entity = new HttpEntity<String>(ProcessData.getProcessWithRequesterNotFoundJSON(), headers);
+        ResponseEntity<String> response = restTemplate.exchange(
+                createURLWithPort("/process", port), HttpMethod.POST, entity, String.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test

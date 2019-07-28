@@ -30,6 +30,17 @@ public class ProcessData {
         return processes.get(i);
     }
 
+    public static String getProcessWithRequesterNotFoundJSON() {
+        return "{\n" +
+                "\t\"externalCode\":\"ADWER234242\",\n" +
+                "\t\"internalCode\":\"WHT0001\",\n" +
+                "\t\"dtCreation\":[2019,7,9,20,12],\n" +
+                "\t\"requester\":{\n" +
+                "\t\t\"id\":1000\n" +
+                "\t}\n" +
+                "}";
+    }
+
     private static void init() {
         processes = Arrays.asList(
                 new ProcessDTBuilder()
