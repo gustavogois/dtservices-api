@@ -1,5 +1,6 @@
 package com.gois.dtservicesapi.exceptionhandler;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -58,7 +59,8 @@ public class DTServicesExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({ DataIntegrityViolationException.class })
     public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest request) {
         String userMessage = messageSource.getMessage("resource.operation_not_allowed", null, LocaleContextHolder.getLocale());
-        String developerMessage = ex.toString();
+        // Using a commons lang API to get the root cause
+        String developerMessage = ExceptionUtils.getRootCauseMessage(ex);
         List<Error> erros = Arrays.asList(new Error(userMessage, developerMessage));
         return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
