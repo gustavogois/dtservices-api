@@ -3,7 +3,7 @@ package com.gois.dtservicesapi.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
@@ -20,7 +20,7 @@ public class ProcessDT {
 
     private String internalCode;
 
-    private LocalDateTime dtCreation;
+    private LocalDate dtCreation;
 
     @ManyToOne
     private Requester requester;
@@ -49,11 +49,11 @@ public class ProcessDT {
         this.internalCode = internalCode;
     }
 
-    public LocalDateTime getDtCreation() {
+    public LocalDate getDtCreation() {
         return dtCreation;
     }
 
-    public void setDtCreation(LocalDateTime dtCreation) {
+    public void setDtCreation(LocalDate dtCreation) {
         this.dtCreation = dtCreation;
     }
 

@@ -3,7 +3,7 @@ package com.gois.dtservicesapi.model.builders;
 import com.gois.dtservicesapi.model.ProcessDT;
 import com.gois.dtservicesapi.model.Requester;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 
 public class ProcessDTBuilder {
@@ -22,7 +22,7 @@ public class ProcessDTBuilder {
         this.process.setExternalCode(extCode);
         return this;
     }
-    public ProcessDTBuilder withDtCreation(LocalDateTime dtCreation) {
+    public ProcessDTBuilder withDtCreation(LocalDate dtCreation) {
         this.process.setDtCreation(dtCreation);
         return this;
     }

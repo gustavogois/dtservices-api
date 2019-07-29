@@ -3,7 +3,7 @@ package com.gois.dtservicesapi.util.data;
 import com.gois.dtservicesapi.model.ProcessDT;
 import com.gois.dtservicesapi.model.builders.ProcessDTBuilder;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -45,10 +45,10 @@ public class ProcessData {
         processes = Arrays.asList(
                 new ProcessDTBuilder()
                         .withExtCode("adasd123123")
-                        .withDtCreation(LocalDateTime.now().minusDays(1))
+                        .withDtCreation(LocalDate.now().minusDays(1))
                         .withRequester(RequesterData.get(RequesterData.BANCO_ABC_WITH_DATA_BILLING)).build(),
                 new ProcessDTBuilder()
-                        .withDtCreation(LocalDateTime.now().minusDays(2))
+                        .withDtCreation(LocalDate.now().minusDays(2))
                         .withRequester(RequesterData.get(RequesterData.BANCO_ABC_WITH_DATA_BILLING)).build(),
                 new ProcessDTBuilder().withRequester(RequesterData.get(RequesterData.BANCO_ABC_WITH_DATA_BILLING))
                         .withExtCode("")
