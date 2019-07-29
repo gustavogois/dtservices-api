@@ -1,6 +1,7 @@
 package com.gois.dtservicesapi.controller;
 
 import com.gois.dtservicesapi.model.ProcessDT;
+import com.gois.dtservicesapi.repository.filter.ProcessDTFilter;
 import com.gois.dtservicesapi.service.ProcessDTService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,12 @@ public class ProcessController {
 
     @GetMapping
     public List<ProcessDT> list() {
+
+        return service.findAll();
+    }
+
+    @GetMapping("/search")
+    public List<ProcessDT> search(ProcessDTFilter processFilter) {
 
         return service.findAll();
     }
